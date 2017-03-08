@@ -49,8 +49,69 @@
             </form>
         </div>
         <pre class="debug"></pre>
-        <script>
-            // your code goes here ...
-        </script>
+<script>
+
+  var age;
+  var relationship;
+  var smoker;
+  var counter = 0;
+  var household = [];
+  var addButton = document.getElementsByClassName("add")[0];
+
+
+  addButton.addEventListener("click", function(e) {
+    e.preventDefault();
+
+    //get form input values
+    age = document.getElementsByName('age')[0].value;
+    relationship = document.getElementsByName('rel')[0].value;
+    smoker = document.getElementsByName('smoker')[0].checked;
+
+    //validate input values
+    if (!(age > 0) || !age) {
+      alert ('Age is required and must be greater than zero');
+      return;
+    }
+    if (!relationship) {
+      alert ('Relationship is required');
+      return;
+    }
+
+    //set text of member to be displayed on view, reset form to blank after adding
+    var node = document.createElement("p");
+    node.setAttribute("class", "clickable");
+    var textnode = document.createTextNode("age: " + age + "relationship: " + relationship + " smoker: " + smoker + "  - click to remove me");
+    node.appendChild(textnode);
+    document.getElementsByClassName("debug")[0].style.display = "block";
+    document.getElementsByClassName("debug")[0].appendChild(node);
+    document.getElementsByTagName('form')[0].reset();
+    household.push({"number": counter, "age": age, "relationship": relationship, "smoker": smoker});
+
+    //add event listener to member just created on the view to make removable
+    document.getElementsByClassName("clickable")[counter].addEventListener("click", function(e) {
+      e.preventDefault();
+      //remove selected member from view
+      var child = this;
+      child.remove();
+      //then remove selected member from household array
+      for(var i = 0; i < household.length; i ++) {
+        if(household[i].age === age && household[i].relationship === relationship && household[i].smoker === smoker) {
+          household.splice(i,1);
+          break;
+        }
+      }
+      counter --;
+    })
+    counter ++;
+  })
+  //Turn the data into JSON for a trip to the server
+  document.getElementsByTagName('form')[0].addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    var result = JSON.stringify(household);
+
+  })
+
+</script>
     </body>
 </html>
